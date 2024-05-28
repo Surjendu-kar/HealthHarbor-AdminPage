@@ -11,9 +11,7 @@ import {
   Button,
   TextField,
 } from "@mui/material";
-import { useTable, useUpdate, useNavigation, useDelete } from "@refinedev/core";
-import { BaseRecord } from "@refinedev/core/resources";
-
+import { useTable, useUpdate, useNavigation, useDelete, BaseRecord } from "@refinedev/core";
 interface Qualification {
   startDate: string;
   endDate: string;
