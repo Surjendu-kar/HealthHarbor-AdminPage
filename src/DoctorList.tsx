@@ -12,14 +12,53 @@ import {
   TextField,
 } from "@mui/material";
 import { useTable, useUpdate, useNavigation, useDelete } from "@refinedev/core";
+import { BaseRecord } from "@refinedev/core/resources";
+
+interface Qualification {
+  startDate: string;
+  endDate: string;
+  degree: string;
+  university: string;
+}
+
+interface Experience {
+  startDate: string;
+  endDate: string;
+  position: string;
+  hospital: string;
+}
+
+interface TimeSlot {
+  day: string;
+  startTime: string;
+  endTime: string;
+}
+
+interface Doctor extends BaseRecord {
+  name: string;
+  email: string;
+  created_at: string;
+  gender: string;
+  price: number;
+  qualifications: Qualification[];
+  experiences: Experience[];
+  timeSlot: TimeSlot[];
+  about: string;
+  phoneno: string;
+  address: string;
+  city: string;
+  img: string;
+  role: string;
+  approved: string;
+}
 
 const DoctorList = () => {
   const { tableQueryResult } = useTable({ resource: "doctorInfo" });
   const { data } = tableQueryResult;
-  const [editRowId, setEditRowId] = useState(null);
-  const [editFormData, setEditFormData] = useState({});
-  const { mutate: updateDoctor } = useUpdate();
-  const { mutate: deleteDoctor } = useDelete();
+  const [editRowId, setEditRowId] = useState<string | null>(null);
+  const [editFormData, setEditFormData] = useState<Doctor>({} as Doctor);
+  const { mutate: updateDoctor } = useUpdate<Doctor>();
+  const { mutate: deleteDoctor } = useDelete<Doctor>();
 
   const { push } = useNavigation();
 
@@ -32,14 +71,14 @@ const DoctorList = () => {
             wordBreak: "break-word",
             color: "black",
             backgroundColor: "white",
-            border: "1px solid #ccc", // Add border here
+            border: "1px solid #ccc", 
           },
         },
       },
     },
   });
 
-  const handleEditClick = (doctor) => {
+  const handleEditClick = (doctor: Doctor) => {
     setEditRowId(doctor.id);
     setEditFormData({
       name: doctor.name,
@@ -60,26 +99,29 @@ const DoctorList = () => {
     });
   };
 
-  const handleSave = (id) => {
+  const handleSave = (id: string) => {
     updateDoctor({ resource: "doctorInfo", id: id, values: editFormData });
     setEditRowId(null);
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = (id: string) => {
     deleteDoctor({ resource: "doctorInfo", id: id });
   };
 
-  const handleApprove = (doctorId) => {
+  const handleApprove = (doctorId: string) => {
     const newValues = { ...editFormData, approved: "YES" };
     updateDoctor({ resource: "doctorInfo", id: doctorId, values: newValues });
   };
 
-  const handleReject = (doctorId) => {
+  const handleReject = (doctorId: string) => {
     const newValues = { ...editFormData, approved: "NO" };
     updateDoctor({ resource: "doctorInfo", id: doctorId, values: newValues });
   };
 
-  const handleChange = (e, field) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: string
+  ) => {
     setEditFormData({ ...editFormData, [field]: e.target.value });
   };
 
