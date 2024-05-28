@@ -11,52 +11,15 @@ import {
   Button,
   TextField,
 } from "@mui/material";
-import { useTable, useUpdate, useNavigation, useDelete, BaseRecord } from "@refinedev/core";
-interface Qualification {
-  startDate: string;
-  endDate: string;
-  degree: string;
-  university: string;
-}
-
-interface Experience {
-  startDate: string;
-  endDate: string;
-  position: string;
-  hospital: string;
-}
-
-interface TimeSlot {
-  day: string;
-  startTime: string;
-  endTime: string;
-}
-
-interface Doctor extends BaseRecord {
-  name: string;
-  email: string;
-  created_at: string;
-  gender: string;
-  price: number;
-  qualifications: Qualification[];
-  experiences: Experience[];
-  timeSlot: TimeSlot[];
-  about: string;
-  phoneno: string;
-  address: string;
-  city: string;
-  img: string;
-  role: string;
-  approved: string;
-}
+import { useTable, useUpdate, useNavigation, useDelete } from "@refinedev/core";
 
 const DoctorList = () => {
   const { tableQueryResult } = useTable({ resource: "doctorInfo" });
   const { data } = tableQueryResult;
-  const [editRowId, setEditRowId] = useState<string | null>(null);
-  const [editFormData, setEditFormData] = useState<Doctor>({} as Doctor);
-  const { mutate: updateDoctor } = useUpdate<Doctor>();
-  const { mutate: deleteDoctor } = useDelete<Doctor>();
+  const [editRowId, setEditRowId] = useState(null);
+  const [editFormData, setEditFormData] = useState({});
+  const { mutate: updateDoctor } = useUpdate();
+  const { mutate: deleteDoctor } = useDelete();
 
   const { push } = useNavigation();
 
@@ -69,14 +32,14 @@ const DoctorList = () => {
             wordBreak: "break-word",
             color: "black",
             backgroundColor: "white",
-            border: "1px solid #ccc", 
+            border: "1px solid #ccc", // Add border here
           },
         },
       },
     },
   });
 
-  const handleEditClick = (doctor: Doctor) => {
+  const handleEditClick = (doctor) => {
     setEditRowId(doctor.id);
     setEditFormData({
       name: doctor.name,
@@ -97,29 +60,26 @@ const DoctorList = () => {
     });
   };
 
-  const handleSave = (id: string) => {
+  const handleSave = (id) => {
     updateDoctor({ resource: "doctorInfo", id: id, values: editFormData });
     setEditRowId(null);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (id) => {
     deleteDoctor({ resource: "doctorInfo", id: id });
   };
 
-  const handleApprove = (doctorId: string) => {
+  const handleApprove = (doctorId) => {
     const newValues = { ...editFormData, approved: "YES" };
     updateDoctor({ resource: "doctorInfo", id: doctorId, values: newValues });
   };
 
-  const handleReject = (doctorId: string) => {
+  const handleReject = (doctorId) => {
     const newValues = { ...editFormData, approved: "NO" };
     updateDoctor({ resource: "doctorInfo", id: doctorId, values: newValues });
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    field: string
-  ) => {
+  const handleChange = (e, field) => {
     setEditFormData({ ...editFormData, [field]: e.target.value });
   };
 
